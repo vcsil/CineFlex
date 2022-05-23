@@ -1,8 +1,11 @@
 import React from "react";
 import styled from 'styled-components';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
+import axios from 'axios';
+
 
 import Footer from "../Footer/Footer";
+import Load from "../Load/Load";
 
 function Assentos() {
     return (
@@ -125,17 +128,52 @@ function Inputs({ name, setName, cpf, setCpf }) {
 
 
 export default function SelAssento() {
+
+    const { idSessao } = useParams();
+
     const [name, setName] = React.useState("")
     const [cpf, setCpf] = React.useState("")
 
+    const [sessao, setSessao] = React.useState([])
+    const [carregando, setCarregando] = React.useState(true)
+
+    function estaCarregando() {
+        setCarregando(true)
+    }
+
+    function foiCarregado() {
+        setCarregando(false)
+    }
+
+    React.useEffect(() => {
+        estaCarregando()
+        const requisicao = axios.get(`https://mock-api.driven.com.br/api/v5/cineflex/showtimes/${idSessao}/seats`);
+
+        requisicao.then(resposta => {
+            setSessao(resposta.data);
+            foiCarregado();
+        });
+    }, []);
+
+    console.log(sessao)
+
     return (
         <>
-            <Container>
-                <Assentos />
-                <Inputs name={name} setName={setName} cpf={cpf} setCpf={setCpf} />
-            </ Container>
-            <Footer filme="Enola Holmes" 
-                    dia="Quinta-feira - 15:00" />
+            {
+                carregando ?
+                <Load />
+                :
+                <>
+                    <Container>
+                        <Assentos />
+                        <Inputs name={name} setName={setName} cpf={cpf} setCpf={setCpf} />
+                    </ Container>
+                    <Footer filme={sessao['movie'].title}
+                            img={sessao['movie'].posterURL}
+                            dia={sessao['day'].weekday + " - " + sessao['day'].date} />
+                </>
+            }
+            
 
         </>
     );
@@ -254,6 +292,12 @@ const Input = styled.input`
     padding: 0 18px;
     border: 1px solid #D5D5D5;
     border-radius: 3px;
+
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 21px;
 
     &:nth-child(2) {
         margin-bottom: 16px;

@@ -1,30 +1,68 @@
 import React from "react";
+import axios from 'axios';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
-function Filmes() {
+import Load from "../Load/Load";
+
+
+function Pelicula({ id, overview, posterURL, releaseDate, title }) {
     return (
-        <Filme> <Banner /></Filme>
+        <Filme> 
+            <Link to={`/filme/${id}`}> 
+                <Banner src={posterURL} /> 
+            </Link>
+        </Filme>
     );
 }
 
 
 export default function SelFilme() {
+
+    const [filmes, setFilmes] = React.useState([])
+    const [carregando, setCarregando] = React.useState(true)
+
+    function estaCarregando() {
+        setCarregando(true)
+    }
+
+    function foiCarregado() {
+        setCarregando(false)
+    }
+
+    React.useEffect(() => {
+        estaCarregando()
+		const requisicao = axios.get("https://mock-api.driven.com.br/api/v5/cineflex/movies");
+
+		requisicao.then(resposta => {
+			setFilmes(resposta.data);
+            foiCarregado();
+		});
+	}, []);
+
+
     return (
         <>
-            <Titulo>
-                <h2>Selecione o filme</h2>
-            </ Titulo>
-            <ContainerFilmes>
-                <Filmes />
-                <Filmes />
-                <Filmes />
-                <Filmes />
-                <Filmes />
-                <Filmes />
-                <Filmes />
-                <Filmes />
-                <Filmes />
-            </ContainerFilmes>
+            {
+                carregando ?
+                <Load />
+                :
+                <>
+                    <Titulo>
+                        <h2>Selecione o filme</h2>
+                    </ Titulo>
+                    <ContainerFilmes>
+                            {filmes.map((filme) => <Pelicula key={filme.id}
+                                                        id={filme.id}
+                                                        overview={filme.overview}
+                                                        posterURL={filme.posterURL}
+                                                        releaseDate={filme.releaseDate}
+                                                        title={filme.title}/>)}
+                    </ContainerFilmes>
+                </>
+            }
+
+            
         </>
     )
 }
@@ -62,10 +100,10 @@ const Filme = styled.li`
     align-items: center;
 `
 
-const Banner = styled.div`
+const Banner = styled.img`
     width: 130px;
     height: 194px;
-    background-color: #c3c3c3;
+    /* background-color: #c3c3c3; */
     cursor: pointer;
 
     & :hover {

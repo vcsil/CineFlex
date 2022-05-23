@@ -27,6 +27,11 @@ const GlobalStyle = createGlobalStyle`
     letter-spacing: 0.04em;
     color: #FFFFFF;
   } 
+
+  body {
+    font-family: 'Roboto';
+    font-style: normal;
+  }
 `;
 
 export default GlobalStyle;

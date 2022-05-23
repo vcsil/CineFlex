@@ -1,34 +1,26 @@
 import React from "react";
 import styled from 'styled-components';
+import { useParams, Link } from "react-router-dom";
+import axios from 'axios';
+
+
 import Footer from "../Footer/Footer";
+import Load from "../Load/Load";
 
-const QntDias = 6;
+function Dia({ id, weekday, date, showtimes }) {
 
-function Dia() {
     return (
-        <ContainerDia>
+        <ContainerDia key={id} >
             <Data>
-                Quinta-feira - 24/06/2021
+                {weekday} - {date}
             </ Data>
             <ContainerHora>
-                <Hora>
-                    <p>15:00</p>
-                </Hora>
-                <Hora>
-                    <p>15:00</p>
-                </Hora>
-                <Hora>
-                    <p>15:00</p>
-                </Hora>
-                <Hora>
-                    <p>15:00</p>
-                </Hora>
-                <Hora>
-                    <p>15:00</p>
-                </Hora>
-                <Hora>
-                    <p>15:00</p>
-                </Hora>
+                {showtimes.map((hora) =>
+                    <Link to={`/sessao/${hora.id}`}>
+                        <Hora key={hora.id} >
+                            <p>{hora.name}</p>
+                        </Hora>
+                    </Link>)}
             </ContainerHora>
         </ContainerDia>
     );
@@ -36,17 +28,50 @@ function Dia() {
 
 
 export default function SelFilme() {
+
+    const { idFilme } = useParams()
+
+    const [filme, setFilme] = React.useState([])
+    const [carregando, setCarregando] = React.useState(true)
+
+    function estaCarregando() {
+        setCarregando(true)
+    }
+
+    function foiCarregado() {
+        setCarregando(false)
+    }
+
+    React.useEffect(() => {
+        estaCarregando()
+        const requisicao = axios.get(`https://mock-api.driven.com.br/api/v5/cineflex/movies/${idFilme}/showtimes`);
+
+        requisicao.then(resposta => {
+            setFilme(resposta.data);
+            foiCarregado();
+        });
+    }, []);
+
     return (
         <>
-            <Titulo>
-                <h2>Selecione o horário</h2>
-            </ Titulo>
-            <Dia />
-            <Dia />
-            <Dia />
-            <Dia />
-            <Dia />
-            <Footer filme="Enola Holmes" dia=""/>
+            {
+                carregando ?
+                    <Load />
+                    :
+                    <>
+                        <Titulo>
+                            <h2>Selecione o horário</h2>
+                        </ Titulo>
+                        {filme['days'].map((sessoes) => < Dia key={sessoes.id}
+                            id={sessoes.id}
+                            weekday={sessoes.weekday}
+                            date={sessoes.date}
+                            showtimes={sessoes.showtimes} />)}
+                        <Espaco />
+                        <Footer filme={filme['title']} img={filme['posterURL']} dia="" />
+                    </>
+            }
+
         </>
     )
 }
@@ -71,10 +96,6 @@ const ContainerDia = styled.ul`
     display: block;
     flex-wrap: wrap;
     margin: 0 24px 24px;
-
-    &:nth-child(${ QntDias }) {
-        margin-bottom: 130px;
-    }
 `
 
 const Data = styled.li`
@@ -104,4 +125,7 @@ const Hora = styled.button`
         letter-spacing: 0.02em;
     }
 
+`
+const Espaco = styled.div`
+    margin-bottom: 130px;
 `

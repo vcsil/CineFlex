@@ -13,6 +13,8 @@ import Finaliza from "./Finaliza/Finaliza.js";
 export default function App() {
 
 
+
+
     return (
         <Fragment>
             <GlobalStyle />
@@ -21,9 +23,9 @@ export default function App() {
                 <Main >
                     <Routes>
                         <Route path="/" element={< SelFilme />} />
-                        <Route path="/filme" element={< SelHor />} />   
-                        <Route path="/sessao" element={< SelAssento />} />   
-                        <Route path="/sucesso" element={< Finaliza />} />   
+                        <Route path="/filme/:idFilme" element={< SelHor />} />
+                        <Route path="/sessao/:idSessao" element={< SelAssento />} />
+                        <Route path="/sucesso" element={< Finaliza />} />
                     </Routes>
                 </ Main>
             </ BrowserRouter>

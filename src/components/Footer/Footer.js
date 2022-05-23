@@ -2,13 +2,12 @@ import React from "react";
 import styled from 'styled-components';
 
 
-export default function Footer({ filme, dia }) {
+export default function Footer( { filme, img ,dia } ) {
     return (
         <Footerr>
             <Moldura>
                 <Quadro>
-                    <Poster>
-                    </Poster>
+                    <Poster src={img} />
                 </Quadro>
             </Moldura>
             <Descricao>
@@ -28,7 +27,7 @@ const Footerr = styled.footer`
     background-color: #DFE6ED;
     box-shadow: 0px -4px 6px rgb(0 0 0 / 5%);
     display: flex;
-    padding: 14px 10px;
+    padding: 14px 0px 14px 10px;
 
 `
 const Moldura = styled.div`
@@ -47,10 +46,11 @@ const Quadro = styled.div`
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 2px;
 `
-const Poster = styled.div`
+const Poster = styled.img`
     width: 48px;
     height: 72px;
     background-color: #c3c3c3;
+    object-fit: cover;
 `
 const Descricao = styled.div`
     display: flex;

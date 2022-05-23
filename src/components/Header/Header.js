@@ -1,11 +1,17 @@
 import React from "react";
 import styled from 'styled-components';
+import { useNavigate } from "react-router-dom";
 
-function reiniciaPag() {
-    window.location.reload()
-}
+
 
 export default function Header() {
+
+    const navigate = useNavigate();
+
+    function reiniciaPag() {
+        navigate("/")
+    }
+
     return (
         <Headerr>
             <h1 onClick={reiniciaPag}>CINEFLEX</h1>
