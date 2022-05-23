@@ -12,6 +12,8 @@ import Finaliza from "./Finaliza/Finaliza.js";
 
 export default function App() {
 
+    const [name, setName] = React.useState("")
+    const [cpf, setCpf] = React.useState("")
 
 
 
@@ -24,8 +26,8 @@ export default function App() {
                     <Routes>
                         <Route path="/" element={< SelFilme />} />
                         <Route path="/filme/:idFilme" element={< SelHor />} />
-                        <Route path="/sessao/:idSessao" element={< SelAssento />} />
-                        <Route path="/sucesso" element={< Finaliza />} />
+                        <Route path="/sessao/:idSessao" element={< SelAssento name={name} setName={setName} cpf={cpf} setCpf={setCpf}/>} />
+                        <Route path="/sucesso" element={< Finaliza name={name} cpf={cpf} />} />
                     </Routes>
                 </ Main>
             </ BrowserRouter>

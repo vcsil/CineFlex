@@ -7,68 +7,26 @@ import axios from 'axios';
 import Footer from "../Footer/Footer";
 import Load from "../Load/Load";
 
-function Assentos() {
+let cadeirasSelecionadas = []; 
+
+function Assentos({ cadeiras }) {
+    console.log(cadeiras)
+
+    function adicionaCadeira(id) {
+        cadeirasSelecionadas.push(id)
+        console.log("oi")
+    }
+
     return (
         <ContainerAssentos>
             <Titulo>
                 <h2>Selecione o(s) assentos</h2>
             </Titulo>
             <Matriz>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-                <Cadeira>01</ Cadeira>
-
+                {cadeiras.map((poltrona) => 
+                    <Cadeira key={poltrona.id} livre={poltrona.isAvailable} >
+                        {poltrona.name}
+                    </Cadeira>)}
             </Matriz>
             <Legenda>
                 <Caracteristica>
@@ -91,7 +49,7 @@ function Assentos() {
 
 
 function Inputs({ name, setName, cpf, setCpf }) {
-    
+
     const navigate = useNavigate();
 
     function SubmitData(event) {
@@ -101,23 +59,23 @@ function Inputs({ name, setName, cpf, setCpf }) {
 
     return (
         <>
-            <ContainerInput  onSubmit={SubmitData} > 
+            <ContainerInput onSubmit={SubmitData} >
                 <Label htmlFor="name">Nome do comprador:</Label>
-                <Input 
+                <Input
                     placeholder="Digite seu nome..."
-                    type="name" 
-                    id="name" 
-                    value={name} 
-                    required 
-                    onChange={(e) => setName(e.target.value) }></Input>
+                    type="name"
+                    id="name"
+                    value={name}
+                    required
+                    onChange={(e) => setName(e.target.value)}></Input>
                 <Label htmlFor="cpf" >CPF do comprador:</Label>
-                <Input 
+                <Input
                     placeholder="Digite seu CPF..."
-                    type="cpf" 
-                    id="cpf" 
-                    value={cpf} 
-                    required 
-                    onChange={(e) => setCpf(e.target.value) }></Input>
+                    type="cpf"
+                    id="cpf"
+                    value={cpf}
+                    required
+                    onChange={(e) => setCpf(e.target.value)}></Input>
                 <Btt>
                     <Butao type="submit" > <p>Reservar assento(s)</p></Butao>
                 </Btt>
@@ -127,12 +85,9 @@ function Inputs({ name, setName, cpf, setCpf }) {
 }
 
 
-export default function SelAssento() {
+export default function SelAssento({ name, setName, cpf, setCpf }) {
 
     const { idSessao } = useParams();
-
-    const [name, setName] = React.useState("")
-    const [cpf, setCpf] = React.useState("")
 
     const [sessao, setSessao] = React.useState([])
     const [carregando, setCarregando] = React.useState(true)
@@ -146,6 +101,10 @@ export default function SelAssento() {
     }
 
     React.useEffect(() => {
+
+        setName("");
+        setCpf("");
+
         estaCarregando()
         const requisicao = axios.get(`https://mock-api.driven.com.br/api/v5/cineflex/showtimes/${idSessao}/seats`);
 
@@ -161,19 +120,19 @@ export default function SelAssento() {
         <>
             {
                 carregando ?
-                <Load />
-                :
-                <>
-                    <Container>
-                        <Assentos />
-                        <Inputs name={name} setName={setName} cpf={cpf} setCpf={setCpf} />
-                    </ Container>
-                    <Footer filme={sessao['movie'].title}
+                    <Load />
+                    :
+                    <>
+                        <Container>
+                            <Assentos cadeiras={sessao['seats']} />
+                            <Inputs name={name} setName={setName} cpf={cpf} setCpf={setCpf} />
+                        </ Container>
+                        <Footer filme={sessao['movie'].title}
                             img={sessao['movie'].posterURL}
                             dia={sessao['day'].weekday + " - " + sessao['day'].date} />
-                </>
+                    </>
             }
-            
+
 
         </>
     );
@@ -218,13 +177,35 @@ const Matriz = styled.div`
 const Cadeira = styled.button`
     width: 26px;
     height: 26px;
-    background: #C3CFD9;
-    border: 1px solid #808F9D;
     border-radius: 12px;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
+    background: ${props => props.livre ? '#C3CFD9' : '#FBE192' } ;
+    border: 1px solid ${props => props.livre ? '#808F9D' : '#F7C52B' };
+`
+
+const BolinhaVerde = styled.div`
+    width: 25px;
+    height: 25px;
+    background: #8DD7CF;
+    border: 1px solid #1AAE9E;
+    border-radius: 17px;
+`
+const BolinhaCinza = styled.div`
+    width: 25px;
+    height: 25px;
+    background: #C3CFD9;
+    border: 1px solid #7B8B99;
+    border-radius: 17px;
+`
+const BolinhaAmarelo = styled.div`
+    width: 25px;
+    height: 25px;
+    background: #FBE192;
+    border: 1px solid #F7C52B;
+    border-radius: 17px;
 `
 
 const Legenda = styled.div`
@@ -252,27 +233,6 @@ const Caracteristica = styled.div`
     }
 `
 
-const BolinhaVerde = styled.div`
-    width: 25px;
-    height: 25px;
-    background: #8DD7CF;
-    border: 1px solid #1AAE9E;
-    border-radius: 17px;
-`
-const BolinhaCinza = styled.div`
-    width: 25px;
-    height: 25px;
-    background: #C3CFD9;
-    border: 1px solid #7B8B99;
-    border-radius: 17px;
-`
-const BolinhaAmarelo = styled.div`
-    width: 25px;
-    height: 25px;
-    background: #FBE192;
-    border: 1px solid #F7C52B;
-    border-radius: 17px;
-`
 
 const Label = styled.label`
     font-family: 'Roboto';

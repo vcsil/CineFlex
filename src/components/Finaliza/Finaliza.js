@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from "react-router-dom";
 
 
-export default function Finaliza() {
+export default function Finaliza({ name, cpf }) {
 
     const navigate = useNavigate();
 
@@ -27,7 +27,7 @@ export default function Finaliza() {
                 </Resumo>
                 <Resumo>
                     <h3>Comprador</h3>
-                    <h2>Nome: João da Silva Sauro<br />CPF: 123.456.789-10 </h2>
+                    <h2>Nome: {name}<br />CPF: {cpf} </h2>
                 </Resumo>
                 <ContainerBotao onClick={backToHome}>
                     <Volta><p>Voltar pra Home</p></Volta>
