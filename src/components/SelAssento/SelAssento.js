@@ -7,15 +7,26 @@ import axios from 'axios';
 import Footer from "../Footer/Footer";
 import Load from "../Load/Load";
 
-let cadeirasSelecionadas = []; 
+
 
 function Assentos({ cadeiras }) {
     console.log(cadeiras)
 
-    function adicionaCadeira(id) {
-        cadeirasSelecionadas.push(id)
-        console.log("oi")
+    const [cadeirasSelecionadas, setCadeirasSelecionadas] = React.useState([])
+
+    function escolheCadeira(id) {
+        
+        if (!(cadeirasSelecionadas.includes(id))) {
+            setCadeirasSelecionadas([...cadeirasSelecionadas, id])
+        } else if (cadeirasSelecionadas.includes(id)) {
+            let lista = [...cadeirasSelecionadas]
+            lista  = lista.filter((n) => n != id)
+            setCadeirasSelecionadas(lista)
+        }
+ 
     }
+
+    console.log(cadeirasSelecionadas)
 
     return (
         <ContainerAssentos>
@@ -24,7 +35,7 @@ function Assentos({ cadeiras }) {
             </Titulo>
             <Matriz>
                 {cadeiras.map((poltrona) => 
-                    <Cadeira key={poltrona.id} livre={poltrona.isAvailable} >
+                    <Cadeira key={poltrona.id} livre={poltrona.isAvailable} selecionada={cadeirasSelecionadas.includes(poltrona.id)} onClick={() => escolheCadeira(poltrona.id)} >
                         {poltrona.name}
                     </Cadeira>)}
             </Matriz>
@@ -182,7 +193,13 @@ const Cadeira = styled.button`
     display: flex;
     justify-content: center;
     align-items: center;
-    background: ${props => props.livre ? '#C3CFD9' : '#FBE192' } ;
+    background: ${props => !props.livre ?
+                    '#FBE192'
+                    :
+                    props => props.selecionada ?
+                        '#8DD7CF'
+                        :
+                        '#C3CFD9' } ;
     border: 1px solid ${props => props.livre ? '#808F9D' : '#F7C52B' };
 `
 
